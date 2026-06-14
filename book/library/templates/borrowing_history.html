@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+{% extends 'library/base.html' %}
+{% load static %}
+
+{% block title %}My Borrowing History - Bookstore{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+:root{
+    --primary:#2563eb;
+    --secondary:#1e3a8a;
+    --success:#16a34a;
+    --warning:#f59e0b;
+    --danger:#ef4444;
+    --dark:#0f172a;
+    --text:#334155;
+    --muted:#64748b;
+    --light:#f8fafc;
+    --white:#ffffff;
+    --border:#e2e8f0;
+    --shadow:0 10px 35px rgba(0,0,0,0.08);
+}
+
+/* PAGE */
+
+.history-page{
+    min-height:100vh;
+    background:linear-gradient(to bottom,#f8fafc,#eef4ff);
+}
+
+/* HERO */
+
+.history-hero{
+    background:
+    linear-gradient(rgba(15,23,42,0.82),
+    rgba(15,23,42,0.82)),
+    url("https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=1400&auto=format&fit=crop");
+
+    background-size:cover;
+    background-position:center;
+    padding:120px 0 90px;
+    position:relative;
+    overflow:hidden;
+}
+
+.hero-content{
+    text-align:center;
+    color:white;
+}
+
+.hero-icon{
+    width:90px;
+    height:90px;
+    border-radius:24px;
+    background:rgba(255,255,255,0.12);
+    backdrop-filter:blur(10px);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:0 auto 25px;
+    font-size:38px;
+}
+
+.hero-content h1{
+    font-size:52px;
+    font-weight:800;
+    margin-bottom:15px;
+}
+
+.hero-content p{
+    color:#cbd5e1;
+    font-size:18px;
+}
+
+/* BACK BUTTON */
+
+.back-btn{
+    position:absolute;
+    top:30px;
+    left:30px;
+    background:white;
+    color:var(--dark);
+    text-decoration:none;
+    padding:12px 22px;
+    border-radius:14px;
+    font-weight:600;
+    box-shadow:var(--shadow);
+    transition:0.3s;
+}
+
+.back-btn:hover{
+    transform:translateY(-2px);
+    color:var(--primary);
+}
+
+/* CONTENT */
+
+.history-content{
+    padding:70px 0;
+}
+
+/* CARD */
+
+.borrow-card{
+    background:white;
+    border-radius:26px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    transition:0.35s;
+    height:100%;
+    border:none;
+}
+
+.borrow-card:hover{
+    transform:translateY(-8px);
+}
+
+.book-image{
+    height:240px;
+    overflow:hidden;
+    position:relative;
+}
+
+.book-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:0.4s;
+}
+
+.borrow-card:hover img{
+    transform:scale(1.06);
+}
+
+.no-image{
+    width:100%;
+    height:100%;
+    background:#f1f5f9;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#94a3b8;
+    font-size:60px;
+}
+
+/* BODY */
+
+.borrow-body{
+    padding:24px;
+}
+
+.book-title{
+    font-size:22px;
+    font-weight:700;
+    color:var(--dark);
+    margin-bottom:8px;
+    line-height:1.4;
+}
+
+.book-author{
+    color:var(--primary);
+    font-weight:600;
+    margin-bottom:18px;
+    font-size:15px;
+}
+
+/* STATUS */
+
+.status{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 18px;
+    border-radius:40px;
+    font-size:13px;
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+.status-returned{
+    background:#dcfce7;
+    color:#166534;
+}
+
+.status-active{
+    background:#fef3c7;
+    color:#92400e;
+}
+
+.status-overdue{
+    background:#fee2e2;
+    color:#991b1b;
+}
+
+/* DETAILS */
+
+.borrow-details{
+    background:#f8fafc;
+    border-radius:18px;
+    padding:18px;
+    margin-bottom:20px;
+}
+
+.detail-item{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:10px;
+    font-size:14px;
+}
+
+.detail-item:last-child{
+    margin-bottom:0;
+}
+
+.detail-label{
+    color:var(--muted);
+    font-weight:600;
+}
+
+.detail-value{
+    color:var(--dark);
+    font-weight:600;
+}
+
+/* BUTTON */
+
+.view-btn{
+    width:100%;
+    border:none;
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+    color:white;
+    padding:13px;
+    border-radius:14px;
+    text-decoration:none;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.view-btn:hover{
+    transform:translateY(-2px);
+    color:white;
+}
+
+/* EMPTY */
+
+.empty-state{
+    background:white;
+    border-radius:30px;
+    padding:90px 30px;
+    text-align:center;
+    box-shadow:var(--shadow);
+}
+
+.empty-state i{
+    font-size:100px;
+    color:#cbd5e1;
+    margin-bottom:25px;
+}
+
+.empty-state h2{
+    font-size:42px;
+    font-weight:800;
+    color:var(--dark);
+    margin-bottom:15px;
+}
+
+.empty-state p{
+    color:var(--muted);
+    font-size:17px;
+    margin-bottom:35px;
+}
+
+.empty-buttons{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.empty-btn{
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+    color:white;
+    text-decoration:none;
+    padding:14px 28px;
+    border-radius:16px;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.empty-btn:hover{
+    color:white;
+    transform:translateY(-3px);
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .history-hero{
+        padding:100px 0 70px;
+    }
+
+    .hero-content h1{
+        font-size:36px;
+    }
+
+    .hero-content p{
+        font-size:16px;
+    }
+
+    .hero-icon{
+        width:75px;
+        height:75px;
+        font-size:30px;
+    }
+
+    .back-btn{
+        top:20px;
+        left:20px;
+        padding:10px 18px;
+        font-size:14px;
+    }
+
+    .empty-state{
+        padding:60px 20px;
+    }
+
+    .empty-state h2{
+        font-size:30px;
+    }
+
+}
+
+</style>
+
+<div class="history-page">
+
+    <!-- HERO -->
+
+    <section class="history-hero">
+
+        <a href="{% url 'home' %}" class="back-btn">
+            <i class="fas fa-arrow-left me-2"></i>
+            Back to Home
+        </a>
+
+        <div class="container">
+
+            <div class="hero-content">
+
+                <div class="hero-icon">
+                    <i class="fas fa-history"></i>
+                </div>
+
+                <h1>My Borrowing History</h1>
+
+                <p>
+                    Track all your borrowed books and reading activity
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- CONTENT -->
+
+    <section class="history-content">
+
+        <div class="container">
+
+            {% if borrowings %}
+
+            <div class="row g-4">
+
+                {% for borrowing in borrowings %}
+
+                {% with today=now|date:'Y-m-d' %}
+
+                <div class="col-xl-4 col-md-6">
+
+                    <div class="borrow-card">
+
+                        <!-- IMAGE -->
+
+                        <div class="book-image">
+
+                            {% if borrowing.book.cover_image %}
+
+                            <img src="{{ borrowing.book.cover_image.url }}"
+                                 alt="{{ borrowing.book.title }}">
+
+                            {% else %}
+
+                            <div class="no-image">
+                                <i class="fas fa-book"></i>
+                            </div>
+
+                            {% endif %}
+
+                        </div>
+
+                        <!-- BODY -->
+
+                        <div class="borrow-body">
+
+                            <h5 class="book-title">
+                                {{ borrowing.book.title }}
+                            </h5>
+
+                            <div class="book-author">
+                                by {{ borrowing.book.author }}
+                            </div>
+
+                            <!-- STATUS -->
+
+                            {% if borrowing.is_returned %}
+
+                            <div class="status status-returned">
+                                <i class="fas fa-check-circle"></i>
+                                Returned
+                            </div>
+
+                            {% elif borrowing.due_date|date:'Y-m-d' < today %}
+
+                            <div class="status status-overdue">
+                                <i class="fas fa-exclamation-circle"></i>
+                                Overdue
+                            </div>
+
+                            {% else %}
+
+                            <div class="status status-active">
+                                <i class="fas fa-clock"></i>
+                                Active
+                            </div>
+
+                            {% endif %}
+
+                            <!-- DETAILS -->
+
+                            <div class="borrow-details">
+
+                                <div class="detail-item">
+
+                                    <div class="detail-label">
+                                        Borrowed
+                                    </div>
+
+                                    <div class="detail-value">
+                                        {{ borrowing.borrow_date|date:"M d, Y" }}
+                                    </div>
+
+                                </div>
+
+                                <div class="detail-item">
+
+                                    <div class="detail-label">
+                                        Due Date
+                                    </div>
+
+                                    <div class="detail-value">
+                                        {{ borrowing.due_date }}
+                                    </div>
+
+                                </div>
+
+                                {% if borrowing.return_date %}
+
+                                <div class="detail-item">
+
+                                    <div class="detail-label">
+                                        Returned
+                                    </div>
+
+                                    <div class="detail-value">
+                                        {{ borrowing.return_date }}
+                                    </div>
+
+                                </div>
+
+                                {% endif %}
+
+                            </div>
+
+                            <!-- BUTTON -->
+
+                            <a href="{% url 'book_detail' borrowing.book.pk %}"
+                               class="view-btn">
+
+                               <i class="fas fa-eye"></i>
+                               View Book Details
+
+                            </a>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                {% endwith %}
+
+                {% endfor %}
+
+            </div>
+
+            {% else %}
+
+            <!-- EMPTY -->
+
+            <div class="empty-state">
+
+                <i class="fas fa-book-open"></i>
+
+                <h2>No Borrowing History Yet</h2>
+
+                <p>
+                    Explore our collection and start borrowing books today.
+                </p>
+
+                <div class="empty-buttons">
+
+                    <a href="{% url 'book_list' %}" class="empty-btn">
+                        <i class="fas fa-book me-2"></i>
+                        Browse Books
+                    </a>
+
+                    <a href="{% url 'home' %}" class="empty-btn">
+                        <i class="fas fa-home me-2"></i>
+                        Back to Home
+                    </a>
+
+                </div>
+
+            </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+</div>
+
+{% endblock %}

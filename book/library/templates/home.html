@@ -1,0 +1,1018 @@
+{% extends 'library/base.html' %}
+{% load static %}
+
+{% block title %}Welcome - Bookstore{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+:root{
+    --primary:#0f172a;
+    --secondary:#1e293b;
+    --accent:#f59e0b;
+    --accent-dark:#d97706;
+    --light:#f8fafc;
+    --muted:#64748b;
+    --border:#e2e8f0;
+    --white:#ffffff;
+    --shadow:0 10px 30px rgba(0,0,0,0.08);
+    --radius:22px;
+}
+
+body{
+    background:#f1f5f9;
+    font-family:'Poppins',sans-serif;
+    overflow-x:hidden;
+}
+
+/* HERO */
+
+.hero{
+    min-height:92vh;
+    position:relative;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:120px 20px;
+    overflow:hidden;
+    background:
+    linear-gradient(rgba(15,23,42,0.78),rgba(15,23,42,0.80)),
+    url("https://images.unsplash.com/photo-1521587760476-6c12a4b040da?q=80&w=1600&auto=format&fit=crop");
+    background-size:cover;
+    background-position:center;
+}
+
+.hero::before{
+    content:"";
+    position:absolute;
+    width:500px;
+    height:500px;
+    background:rgba(245,158,11,0.18);
+    border-radius:50%;
+    top:-120px;
+    right:-120px;
+    filter:blur(80px);
+}
+
+.hero::after{
+    content:"";
+    position:absolute;
+    width:450px;
+    height:450px;
+    background:rgba(59,130,246,0.15);
+    border-radius:50%;
+    bottom:-150px;
+    left:-120px;
+    filter:blur(80px);
+}
+
+.hero-content{
+    position:relative;
+    z-index:2;
+    max-width:900px;
+}
+
+.hero-badge{
+    display:inline-block;
+    background:rgba(255,255,255,0.12);
+    color:white;
+    padding:10px 22px;
+    border-radius:50px;
+    margin-bottom:25px;
+    backdrop-filter:blur(10px);
+    font-weight:600;
+    border:1px solid rgba(255,255,255,0.15);
+}
+
+.hero-title{
+    font-size:72px;
+    font-weight:800;
+    color:white;
+    line-height:1.1;
+    margin-bottom:25px;
+}
+
+.hero-title span{
+    color:var(--accent);
+}
+
+.hero-text{
+    color:#e2e8f0;
+    font-size:20px;
+    line-height:1.8;
+    margin-bottom:40px;
+}
+
+.search-box{
+    background:white;
+    border-radius:70px;
+    padding:12px;
+    max-width:700px;
+    margin:auto;
+    box-shadow:0 15px 40px rgba(0,0,0,0.25);
+}
+
+.search-box .form-control{
+    border:none;
+    box-shadow:none;
+    height:58px;
+    font-size:16px;
+    padding-left:25px;
+    border-radius:50px;
+}
+
+.search-btn{
+    border:none;
+    background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+    color:white;
+    padding:15px 30px;
+    border-radius:50px;
+    font-weight:600;
+}
+
+/* STATS */
+
+.stats-section{
+    margin-top:-70px;
+    position:relative;
+    z-index:5;
+}
+
+.stat-card{
+    background:white;
+    border-radius:22px;
+    padding:35px 25px;
+    text-align:center;
+    box-shadow:var(--shadow);
+    transition:0.3s;
+    height:100%;
+}
+
+.stat-card:hover{
+    transform:translateY(-6px);
+}
+
+.stat-icon{
+    width:75px;
+    height:75px;
+    border-radius:50%;
+    background:#fef3c7;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin:auto auto 20px;
+    color:var(--accent-dark);
+    font-size:30px;
+}
+
+.stat-number{
+    font-size:34px;
+    font-weight:800;
+    color:var(--primary);
+}
+
+.stat-text{
+    color:var(--muted);
+    margin-top:8px;
+}
+
+/* SECTION */
+
+.section{
+    padding:100px 0;
+}
+
+.section-title{
+    text-align:center;
+    margin-bottom:70px;
+}
+
+.section-title h2{
+    font-size:48px;
+    font-weight:800;
+    color:var(--primary);
+}
+
+.section-title p{
+    color:var(--muted);
+    font-size:18px;
+    max-width:700px;
+    margin:auto;
+}
+
+/* BOOK CARDS */
+
+.book-card{
+    background:white;
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+    transition:0.35s;
+    height:100%;
+    position:relative;
+}
+
+.book-card:hover{
+    transform:translateY(-8px);
+}
+
+.book-image{
+    height:320px;
+    overflow:hidden;
+    position:relative;
+}
+
+.book-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:0.4s;
+}
+
+.book-card:hover .book-image img{
+    transform:scale(1.08);
+}
+
+.book-status{
+    position:absolute;
+    top:15px;
+    right:15px;
+    padding:8px 15px;
+    border-radius:50px;
+    font-size:12px;
+    font-weight:700;
+    z-index:5;
+}
+
+.available{
+    background:#16a34a;
+    color:white;
+}
+
+.unavailable{
+    background:#dc2626;
+    color:white;
+}
+
+.book-content{
+    padding:25px;
+}
+
+.book-content h5{
+    font-size:22px;
+    font-weight:700;
+    color:var(--primary);
+}
+
+.book-author{
+    color:var(--muted);
+    margin-bottom:15px;
+}
+
+.book-desc{
+    color:#475569;
+    line-height:1.7;
+    margin-bottom:20px;
+}
+
+.book-btn{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:14px;
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    color:white;
+    text-decoration:none;
+    display:inline-block;
+    text-align:center;
+    font-weight:600;
+}
+
+/* QUICK LINKS */
+
+.quick-card{
+    background:white;
+    border-radius:24px;
+    padding:40px 25px;
+    text-align:center;
+    box-shadow:var(--shadow);
+    transition:0.3s;
+    text-decoration:none;
+    display:block;
+    height:100%;
+}
+
+.quick-card:hover{
+    transform:translateY(-8px);
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+}
+
+.quick-card:hover h4,
+.quick-card:hover p,
+.quick-card:hover i{
+    color:white !important;
+}
+
+.quick-card i{
+    font-size:50px;
+    color:var(--accent-dark);
+    margin-bottom:20px;
+}
+
+.quick-card h4{
+    font-weight:700;
+    color:var(--primary);
+}
+
+.quick-card p{
+    color:var(--muted);
+}
+
+/* ABOUT */
+
+.about-section{
+    background:white;
+}
+
+.about-image{
+    border-radius:25px;
+    overflow:hidden;
+    box-shadow:var(--shadow);
+}
+
+.about-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+.about-content h2{
+    font-size:48px;
+    font-weight:800;
+    color:var(--primary);
+    margin-bottom:25px;
+}
+
+.about-content p{
+    color:#475569;
+    line-height:1.9;
+    margin-bottom:25px;
+}
+
+.feature-item{
+    display:flex;
+    align-items:center;
+    margin-bottom:20px;
+}
+
+.feature-icon{
+    width:50px;
+    height:50px;
+    border-radius:50%;
+    background:#fef3c7;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    margin-right:15px;
+    color:var(--accent-dark);
+}
+
+/* CONTACT */
+
+.contact-section{
+    background:#f8fafc;
+}
+
+.contact-card{
+    background:white;
+    border-radius:24px;
+    padding:50px;
+    box-shadow:var(--shadow);
+}
+
+.form-control{
+    height:55px;
+    border-radius:14px;
+    border:1px solid var(--border);
+    box-shadow:none;
+}
+
+textarea.form-control{
+    height:auto;
+}
+
+.submit-btn{
+    background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+    border:none;
+    color:white;
+    padding:15px 40px;
+    border-radius:14px;
+    font-weight:600;
+}
+
+/* CTA */
+
+.cta-section{
+    background:linear-gradient(135deg,var(--primary),var(--secondary));
+    color:white;
+    text-align:center;
+    padding:100px 20px;
+}
+
+.cta-section h2{
+    font-size:54px;
+    font-weight:800;
+    margin-bottom:20px;
+}
+
+.cta-section p{
+    color:#cbd5e1;
+    font-size:18px;
+    max-width:700px;
+    margin:auto auto 35px;
+}
+
+.cta-btn{
+    background:linear-gradient(135deg,var(--accent),var(--accent-dark));
+    color:white;
+    padding:16px 40px;
+    border-radius:50px;
+    text-decoration:none;
+    font-weight:700;
+    display:inline-block;
+}
+
+/* FOOTER */
+
+.footer{
+    background:#020617;
+    color:#cbd5e1;
+    padding:35px 0;
+    text-align:center;
+}
+
+.footer a{
+    color:white;
+    text-decoration:none;
+}
+
+/* MOBILE */
+
+@media(max-width:992px){
+
+    .hero-title{
+        font-size:50px;
+    }
+
+    .about-content{
+        margin-top:40px;
+    }
+}
+
+@media(max-width:768px){
+
+    .hero{
+        min-height:85vh;
+    }
+
+    .hero-title{
+        font-size:38px;
+    }
+
+    .hero-text{
+        font-size:17px;
+    }
+
+    .section-title h2,
+    .about-content h2,
+    .cta-section h2{
+        font-size:34px;
+    }
+
+    .contact-card{
+        padding:30px 20px;
+    }
+
+    .search-btn{
+        width:100%;
+        margin-top:10px;
+    }
+}
+
+</style>
+
+<!-- HERO -->
+
+<section class="hero">
+
+    <div class="hero-content">
+
+        <div class="hero-badge">
+            <i class="fas fa-book-open me-2"></i>
+            Modern Digital Library
+        </div>
+
+        <h1 class="hero-title">
+            Discover Your Next
+            <span>Favorite Book</span>
+        </h1>
+
+        <p class="hero-text">
+            Explore thousands of books, borrow instantly,
+            build your wishlist, and enjoy reading from
+            our modern digital library platform.
+        </p>
+
+        <form action="{% url 'book_list' %}" method="GET">
+
+            <div class="search-box">
+
+                <div class="row g-2 align-items-center">
+
+                    <div class="col-lg-9">
+                        <input type="text"
+                               class="form-control"
+                               name="q"
+                               placeholder="Search books, authors, genres...">
+                    </div>
+
+                    <div class="col-lg-3">
+                        <button class="search-btn w-100">
+                            <i class="fas fa-search me-2"></i>
+                            Search
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</section>
+
+<!-- STATS -->
+
+<section class="stats-section">
+
+    <div class="container">
+
+        <div class="row g-4">
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="fas fa-book"></i>
+                    </div>
+
+                    <div class="stat-number">
+                        10K+
+                    </div>
+
+                    <div class="stat-text">
+                        Books Available
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+
+                    <div class="stat-number">
+                        5K+
+                    </div>
+
+                    <div class="stat-text">
+                        Active Readers
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+
+                    <div class="stat-number">
+                        120+
+                    </div>
+
+                    <div class="stat-text">
+                        Categories
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="stat-card">
+
+                    <div class="stat-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+
+                    <div class="stat-number">
+                        4.9
+                    </div>
+
+                    <div class="stat-text">
+                        User Rating
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- FEATURED BOOKS -->
+
+<section class="section">
+
+    <div class="container">
+
+        <div class="section-title">
+
+            <h2>Featured Books</h2>
+
+            <p>
+                Handpicked books from our most popular collection
+            </p>
+
+        </div>
+
+        {% if books %}
+
+        <div class="row g-4">
+
+            {% for book in books %}
+
+            <div class="col-lg-3 col-md-6">
+
+                <div class="book-card">
+
+                    <div class="book-image">
+
+                        {% if book.cover_image %}
+
+                        <img src="{{ book.cover_image.url }}"
+                             alt="{{ book.title }}">
+
+                        {% else %}
+
+                        <img src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?q=80&w=1200&auto=format&fit=crop">
+
+                        {% endif %}
+
+                        <div class="book-status {% if book.available_copies > 0 %}available{% else %}unavailable{% endif %}">
+
+                            {% if book.available_copies > 0 %}
+                                Available
+                            {% else %}
+                                Borrowed
+                            {% endif %}
+
+                        </div>
+
+                    </div>
+
+                    <div class="book-content">
+
+                        <h5>
+                            {{ book.title|truncatechars:30 }}
+                        </h5>
+
+                        <div class="book-author">
+                            by {{ book.author }}
+                        </div>
+
+                        <div class="book-desc">
+                            {{ book.description|truncatechars:90 }}
+                        </div>
+
+                        <a href="{% url 'book_detail' book.pk %}"
+                           class="book-btn">
+
+                            View Details
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+<!-- QUICK LINKS -->
+
+<section class="section bg-light">
+
+    <div class="container">
+
+        <div class="section-title">
+
+            <h2>Quick Access</h2>
+
+            <p>
+                Navigate through your library experience quickly
+            </p>
+
+        </div>
+
+        <div class="row g-4">
+
+            <div class="col-lg-3 col-md-6">
+
+                <a href="{% url 'book_list' %}" class="quick-card">
+
+                    <i class="fas fa-book-open"></i>
+
+                    <h4>Browse Books</h4>
+
+                    <p>
+                        Explore all available books
+                    </p>
+
+                </a>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <a href="/wishlist/" class="quick-card">
+
+                    <i class="fas fa-heart"></i>
+
+                    <h4>Wishlist</h4>
+
+                    <p>
+                        View saved books
+                    </p>
+
+                </a>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <a href="/my-borrowings/" class="quick-card">
+
+                    <i class="fas fa-book-reader"></i>
+
+                    <h4>Borrowings</h4>
+
+                    <p>
+                        Check borrowed books
+                    </p>
+
+                </a>
+
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+
+                <a href="/contact/" class="quick-card">
+
+                    <i class="fas fa-headset"></i>
+
+                    <h4>Support</h4>
+
+                    <p>
+                        Contact library support
+                    </p>
+
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- ABOUT -->
+
+<section class="section about-section">
+
+    <div class="container">
+
+        <div class="row align-items-center g-5">
+
+            <div class="col-lg-6">
+
+                <div class="about-image">
+
+                    <img src="https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1400&auto=format&fit=crop">
+
+                </div>
+
+            </div>
+
+            <div class="col-lg-6">
+
+                <div class="about-content">
+
+                    <h2>
+                        About Our Library
+                    </h2>
+
+                    <p>
+                        Our modern digital library provides access to
+                        thousands of books across multiple genres.
+                        Borrow books online, manage your reading list,
+                        and enjoy a seamless reading experience.
+                    </p>
+
+                    <div class="feature-item">
+
+                        <div class="feature-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+
+                        <div>
+                            10,000+ Books Collection
+                        </div>
+
+                    </div>
+
+                    <div class="feature-item">
+
+                        <div class="feature-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+
+                        <div>
+                            Easy Online Borrowing
+                        </div>
+
+                    </div>
+
+                    <div class="feature-item">
+
+                        <div class="feature-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+
+                        <div>
+                            Personalized Wishlist System
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- CONTACT -->
+
+<section class="section contact-section">
+
+    <div class="container">
+
+        <div class="section-title">
+
+            <h2>Contact Us</h2>
+
+            <p>
+                Have questions? Reach out to our support team
+            </p>
+
+        </div>
+
+        <div class="contact-card">
+
+            <form>
+
+                <div class="row g-4">
+
+                    <div class="col-md-6">
+
+                        <input type="text"
+                               class="form-control"
+                               placeholder="Your Name">
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <input type="email"
+                               class="form-control"
+                               placeholder="Your Email">
+
+                    </div>
+
+                    <div class="col-12">
+
+                        <textarea class="form-control"
+                                  rows="6"
+                                  placeholder="Your Message"></textarea>
+
+                    </div>
+
+                    <div class="col-12 text-center">
+
+                        <button class="submit-btn">
+
+                            Send Message
+
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</section>
+
+<!-- CTA -->
+
+<section class="cta-section">
+
+    <div class="container">
+
+        <h2>
+            Start Your Reading Journey Today
+        </h2>
+
+        <p>
+            Browse thousands of books and discover your next favorite read
+        </p>
+
+        <a href="{% url 'book_list' %}"
+           class="cta-btn">
+
+            Browse All Books
+
+        </a>
+
+    </div>
+
+</section>
+
+<!-- FOOTER -->
+
+<footer class="footer">
+
+    <div class="container">
+
+        <p class="mb-0">
+
+            © 2026 Digital Library.
+            All Rights Reserved.
+
+        </p>
+
+    </div>
+
+</footer>
+
+{% endblock %}

@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+{% extends 'library/base.html' %}
+{% load static %}
+
+{% block title %}My Wishlist - Bookstore{% endblock %}
+
+{% block content %}
+
+<style>
+
+:root{
+    --primary:#2563eb;
+    --secondary:#1e3a8a;
+    --dark:#0f172a;
+    --text:#334155;
+    --muted:#64748b;
+    --light:#f8fafc;
+    --border:#e2e8f0;
+    --danger:#ef4444;
+    --white:#ffffff;
+    --shadow:0 10px 30px rgba(0,0,0,0.08);
+    --radius:22px;
+}
+
+/* PAGE */
+
+.wishlist-page{
+    background:linear-gradient(to bottom,#f8fafc,#eef4ff);
+    min-height:100vh;
+    padding:70px 0;
+}
+
+/* HEADER */
+
+.wishlist-header{
+    background:white;
+    border-radius:24px;
+    padding:35px;
+    margin-bottom:40px;
+    box-shadow:var(--shadow);
+}
+
+.wishlist-title{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.wishlist-title-icon{
+    width:70px;
+    height:70px;
+    border-radius:20px;
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:28px;
+}
+
+.wishlist-title h1{
+    font-size:36px;
+    font-weight:700;
+    margin-bottom:5px;
+    color:var(--dark);
+}
+
+.wishlist-title p{
+    margin:0;
+    color:var(--muted);
+    font-size:15px;
+}
+
+.item-count{
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+    color:white;
+    padding:12px 24px;
+    border-radius:40px;
+    font-size:15px;
+    font-weight:600;
+}
+
+/* CARD */
+
+.wishlist-card{
+    border:none;
+    border-radius:24px;
+    overflow:hidden;
+    background:white;
+    box-shadow:var(--shadow);
+    transition:0.3s;
+    height:100%;
+}
+
+.wishlist-card:hover{
+    transform:translateY(-8px);
+}
+
+.book-image{
+    height:280px;
+    overflow:hidden;
+    position:relative;
+}
+
+.book-image img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:0.4s;
+}
+
+.wishlist-card:hover img{
+    transform:scale(1.06);
+}
+
+.no-image{
+    width:100%;
+    height:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#f1f5f9;
+    color:#94a3b8;
+    font-size:60px;
+}
+
+.card-body{
+    padding:22px;
+}
+
+.book-title{
+    font-size:20px;
+    font-weight:700;
+    color:var(--dark);
+    margin-bottom:8px;
+    line-height:1.4;
+}
+
+.book-author{
+    color:var(--primary);
+    font-weight:600;
+    margin-bottom:12px;
+    font-size:14px;
+}
+
+.book-description{
+    color:var(--muted);
+    font-size:14px;
+    line-height:1.7;
+    margin-bottom:18px;
+}
+
+.card-footer-custom{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:auto;
+}
+
+.added-date{
+    font-size:13px;
+    color:var(--muted);
+}
+
+/* BUTTONS */
+
+.action-buttons{
+    display:flex;
+    gap:10px;
+    margin-top:20px;
+}
+
+.view-btn{
+    flex:1;
+    border:none;
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+    color:white;
+    padding:11px;
+    border-radius:12px;
+    text-decoration:none;
+    text-align:center;
+    font-size:14px;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.view-btn:hover{
+    color:white;
+    transform:translateY(-2px);
+}
+
+.remove-btn{
+    border:none;
+    background:#fee2e2;
+    color:#dc2626;
+    width:48px;
+    border-radius:12px;
+    transition:0.3s;
+}
+
+.remove-btn:hover{
+    background:#dc2626;
+    color:white;
+}
+
+/* EMPTY */
+
+.empty-state{
+    background:white;
+    border-radius:28px;
+    padding:80px 30px;
+    text-align:center;
+    box-shadow:var(--shadow);
+}
+
+.empty-state i{
+    font-size:90px;
+    color:#cbd5e1;
+    margin-bottom:25px;
+}
+
+.empty-state h2{
+    font-size:36px;
+    color:var(--dark);
+    margin-bottom:15px;
+    font-weight:700;
+}
+
+.empty-state p{
+    color:var(--muted);
+    margin-bottom:35px;
+    font-size:16px;
+}
+
+.empty-buttons{
+    display:flex;
+    justify-content:center;
+    gap:15px;
+    flex-wrap:wrap;
+}
+
+.empty-btn{
+    background:linear-gradient(135deg,#2563eb,#3b82f6);
+    color:white;
+    text-decoration:none;
+    padding:14px 28px;
+    border-radius:14px;
+    font-weight:600;
+    transition:0.3s;
+}
+
+.empty-btn:hover{
+    color:white;
+    transform:translateY(-3px);
+}
+
+/* BACK */
+
+.back-home{
+    text-align:center;
+    margin-top:50px;
+}
+
+.back-home a{
+    text-decoration:none;
+    color:var(--primary);
+    font-weight:600;
+}
+
+/* MOBILE */
+
+@media(max-width:768px){
+
+    .wishlist-header{
+        padding:25px;
+    }
+
+    .wishlist-title{
+        flex-direction:column;
+        align-items:flex-start;
+    }
+
+    .wishlist-title h1{
+        font-size:28px;
+    }
+
+    .item-count{
+        margin-top:20px;
+        display:inline-block;
+    }
+
+    .empty-state{
+        padding:60px 20px;
+    }
+
+    .empty-state h2{
+        font-size:28px;
+    }
+
+}
+
+</style>
+
+<div class="wishlist-page">
+
+    <div class="container">
+
+        <!-- HEADER -->
+
+        <div class="wishlist-header">
+
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+                <div class="wishlist-title">
+
+                    <div class="wishlist-title-icon">
+                        <i class="fas fa-heart"></i>
+                    </div>
+
+                    <div>
+                        <h1>My Wishlist</h1>
+                        <p>Your favorite books saved for later reading</p>
+                    </div>
+
+                </div>
+
+                <div class="item-count">
+                    {{ wishlist_items.count }} item{{ wishlist_items.count|pluralize }}
+                </div>
+
+            </div>
+
+        </div>
+
+        {% if wishlist_items %}
+
+        <!-- BOOKS -->
+
+        <div class="row g-4">
+
+            {% for item in wishlist_items %}
+
+            <div class="col-xl-3 col-lg-4 col-md-6">
+
+                <div class="wishlist-card">
+
+                    <div class="book-image">
+
+                        {% if item.book.cover_image %}
+
+                        <img src="{{ item.book.cover_image.url }}" alt="{{ item.book.title }}">
+
+                        {% else %}
+
+                        <div class="no-image">
+                            <i class="fas fa-book"></i>
+                        </div>
+
+                        {% endif %}
+
+                    </div>
+
+                    <div class="card-body d-flex flex-column">
+
+                        <h5 class="book-title">
+                            {{ item.book.title|truncatechars:45 }}
+                        </h5>
+
+                        <div class="book-author">
+                            by {{ item.book.author }}
+                        </div>
+
+                        <div class="book-description">
+                            {{ item.book.description|truncatechars:100 }}
+                        </div>
+
+                        <div class="card-footer-custom">
+
+                            <div class="added-date">
+                                Added {{ item.added_at|date:"M d, Y" }}
+                            </div>
+
+                        </div>
+
+                        <div class="action-buttons">
+
+                            <a href="{% url 'book_detail' item.book.pk %}"
+                               class="view-btn">
+
+                               <i class="fas fa-eye me-2"></i>
+                               View Details
+
+                            </a>
+
+                            <button class="remove-btn"
+                                    onclick="handleWishlist({{ item.book.pk }})">
+
+                                <i class="fas fa-trash"></i>
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <!-- EMPTY -->
+
+        <div class="empty-state">
+
+            <i class="fas fa-heart-broken"></i>
+
+            <h2>Your Wishlist is Empty</h2>
+
+            <p>
+                Start exploring books and save your favorites here.
+            </p>
+
+            <div class="empty-buttons">
+
+                <a href="{% url 'home' %}" class="empty-btn">
+                    <i class="fas fa-home me-2"></i>
+                    Back to Home
+                </a>
+
+                <a href="{% url 'book_list' %}" class="empty-btn">
+                    <i class="fas fa-book me-2"></i>
+                    Browse Books
+                </a>
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+        <!-- BACK -->
+
+        <div class="back-home">
+
+            <a href="{% url 'home' %}">
+                <i class="fas fa-arrow-left me-2"></i>
+                Back to Home
+            </a>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+function getCookie(name) {
+
+    let cookieValue = null;
+
+    if (document.cookie && document.cookie !== '') {
+
+        const cookies = document.cookie.split(';');
+
+        for (let i = 0; i < cookies.length; i++) {
+
+            const cookie = cookies[i].trim();
+
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+
+                break;
+
+            }
+
+        }
+
+    }
+
+    return cookieValue;
+
+}
+
+async function handleWishlist(bookId) {
+
+    if (!confirm('Remove this book from your wishlist?')) return;
+
+    try {
+
+        const response = await fetch(`/books/${bookId}/wishlist/`, {
+
+            method: 'POST',
+
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+
+            location.reload();
+
+        } else {
+
+            alert('Error removing from wishlist');
+
+        }
+
+    } catch (error) {
+
+        console.error('Error:', error);
+
+        alert('An error occurred');
+
+    }
+
+}
+
+</script>
+
+{% endblock %}
